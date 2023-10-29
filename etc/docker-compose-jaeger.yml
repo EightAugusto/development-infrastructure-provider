@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.50.0
+    hostname: jaeger
+    container_name: jaeger
+    restart: always
+    ports:
+      - 16686:16686
+      - 9411:9411
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=9411
+
+networks:
+  default:
+    external: true
+    name: ${DOCKER_NETWORK}
