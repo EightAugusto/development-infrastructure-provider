@@ -11,9 +11,10 @@ Centralized repository to provide deployment tools for local Docker development.
 ---
 ## Available Applications:
 
-Application Name | Application|
----              | ---        |
-Jaeger 1.50.0    | jaeger     |
+Application Name   | Application|
+---                | ---        |
+Jaeger 1.50.0      | jaeger     |
+Prometheus v2.47.2 | prometheus |
 
 ---
 ## Run
