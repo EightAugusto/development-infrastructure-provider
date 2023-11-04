@@ -6,7 +6,7 @@ docker.network:
 
 docker.start: docker.network
 	@echo "Starting the application: $(APPLICATION)"
-	@docker-compose -p $(APPLICATION) -f ./etc/docker-compose-$(APPLICATION).yml --env-file ./.env up --build -d
+	@docker-compose -p $(APPLICATION) -f ./lib/docker-compose-$(APPLICATION).yml --env-file .env up --build -d
 
 docker.stop:
 	@echo "Stopping the application: $(APPLICATION)"
