@@ -14,9 +14,10 @@ Centralized repository to provide deployment tools for local Docker development.
 Application Name   | Application|
 ---                | ---        |
 Jaeger 1.58.0      | jaeger     |
-Prometheus v2.52.0 | prometheus |
+Kafka 3.8.0        | kafka      |
 Keycloak 25.0      | keycloak   |
 Nexus 3.71.0       | nexus      |
+Prometheus v2.52.0 | prometheus |
 
 ---
 ## Run

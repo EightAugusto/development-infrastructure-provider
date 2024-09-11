@@ -1,0 +1,92 @@
+services:
+
+  kafka-1: &kafka
+    image: docker.io/apache/kafka:3.8.0
+    hostname: kafka-1
+    container_name: kafka-1
+    restart: always
+    volumes:
+      - kafka-1:/var/lib/kafka/data
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 1024M
+    ports:
+      - ${KAFKA_1_PUBLIC_PORT}:${KAFKA_1_PUBLIC_PORT}
+    environment: &kafka-env
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID}
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:${KAFKA_CONTROLLER_PORT},2@kafka-2:${KAFKA_CONTROLLER_PORT},3@kafka-3:${KAFKA_CONTROLLER_PORT}
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://:${KAFKA_CONTROLLER_PORT},PLAINTEXT://:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://:${KAFKA_1_PUBLIC_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://localhost:${KAFKA_1_PUBLIC_PORT}
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+    healthcheck:
+      test: /opt/kafka/bin/kafka-cluster.sh cluster-id --bootstrap-server localhost:${KAFKA_BROKER_PORT} || exit 1
+      interval: 20s
+      timeout: 60s
+      retries: 3
+  kafka-2:
+    <<: *kafka
+    hostname: kafka-2
+    container_name: kafka-2
+    volumes:
+      - kafka-2:/var/lib/kafka/data
+    ports:
+      - ${KAFKA_2_PUBLIC_PORT}:${KAFKA_2_PUBLIC_PORT}
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: CONTROLLER://:${KAFKA_CONTROLLER_PORT},PLAINTEXT://:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://:${KAFKA_2_PUBLIC_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://localhost:${KAFKA_2_PUBLIC_PORT}
+      <<: *kafka-env
+  kafka-3:
+    <<: *kafka
+    hostname: kafka-3
+    container_name: kafka-3
+    volumes:
+      - kafka-3:/var/lib/kafka/data
+    ports:
+      - ${KAFKA_3_PUBLIC_PORT}:${KAFKA_3_PUBLIC_PORT}
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: CONTROLLER://:${KAFKA_CONTROLLER_PORT},PLAINTEXT://:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://:${KAFKA_3_PUBLIC_PORT}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://localhost:${KAFKA_3_PUBLIC_PORT}
+      <<: *kafka-env
+
+  kafka-ui:
+    image: docker.io/provectuslabs/kafka-ui:v0.7.2
+    hostname: kafka-ui
+    container_name: kafka-ui
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: 512M
+    ports:
+      - ${KAFKA_UI_PUBLIC_PORT}:${KAFKA_UI_PUBLIC_PORT}
+    environment:
+      JAVA_OPTS: -Xms128m -Xmx512m -Dserver.port=${KAFKA_UI_PUBLIC_PORT}
+      KAFKA_CLUSTERS_0_NAME: kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:${KAFKA_BROKER_PORT},kafka-2:${KAFKA_BROKER_PORT},kafka-3:${KAFKA_BROKER_PORT}
+    depends_on:
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+      kafka-3:
+        condition: service_healthy
+
+volumes:
+  kafka-1:
+  kafka-2:
+  kafka-3:
+
+networks:
+  default:
+    external: true
+    name: ${DOCKER_NETWORK}
