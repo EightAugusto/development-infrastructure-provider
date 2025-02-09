@@ -1,0 +1,32 @@
+services:
+  # Valkey
+  valkey:
+    image: registry.hub.docker.com/valkey/valkey:8.0.2-alpine
+    hostname: valkey
+    container_name: valkey
+    restart: always
+    environment:
+      VALKEY_EXTRA_FLAGS: --port ${VALKEY_PUBLIC_PORT} --save 60 1
+    ports:
+      - ${VALKEY_PUBLIC_PORT}:${VALKEY_PUBLIC_PORT}
+    volumes:
+      - volume:/data
+  # Redis Commander
+  redis-commander:
+    image: ghcr.io/joeferner/redis-commander:0.9.0
+    hostname: redis-commander
+    container_name: redis-commander
+    restart: always
+    environment:
+      REDIS_HOSTS: local:valkey:${VALKEY_PUBLIC_PORT}
+      PORT: ${REDIS_COMMANDER_PUBLIC_PORT}
+    ports:
+      - ${REDIS_COMMANDER_PUBLIC_PORT}:${REDIS_COMMANDER_PUBLIC_PORT}
+
+volumes:
+  volume:
+
+networks:
+  default:
+    external: true
+    name: ${DOCKER_NETWORK}
