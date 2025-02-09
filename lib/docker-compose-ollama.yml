@@ -1,0 +1,45 @@
+services:
+  # Ollama Server
+  ollama-server:
+    image: registry.hub.docker.com/ollama/ollama:0.5.7
+    hostname: ollama
+    container_name: ollama
+    restart: always
+    post_start:
+      - command: ollama pull ${OLLAMA_MODEL}
+    volumes:
+      - server:/root/.ollama
+    healthcheck:
+      test:  [ "CMD-SHELL", "bash", "-c", "{ printf >&3 'GET / HTTP/1.0\\r\\n\\r\\n'; cat <&3; } 3<>/dev/tcp/localhost/11434 | grep 'Ollama is' || exit 1"  ]
+      start_period: 10s
+      interval: 5s
+      retries: 3
+      timeout: 60s
+  # Ollama WebUI
+  ollama-webui:
+    image: ghcr.io/open-webui/open-webui:v0.5.10
+    hostname:  ollama-webui
+    container_name: ollama-webui
+    restart: always
+    volumes:
+      - webui:/app/backend/data
+    ports:
+      - ${OLLAMA_WEBUI_PUBLIC_PORT}:${OLLAMA_WEBUI_PUBLIC_PORT}
+    # https://docs.openwebui.com/getting-started/env-configuration
+    environment:
+      OLLAMA_BASE_URLS: http://ollama-server:11434
+      WEBUI_SECRET_KEY: ${DEFAULT_SECRET}
+      WEBUI_AUTH: False
+      PORT: ${OLLAMA_WEBUI_PUBLIC_PORT}
+    depends_on:
+      ollama-server:
+        condition: service_healthy
+
+volumes:
+  server:
+  webui:
+
+networks:
+  default:
+    external: true
+    name: ${DOCKER_NETWORK}
