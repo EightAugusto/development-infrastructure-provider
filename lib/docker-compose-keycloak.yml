@@ -1,7 +1,7 @@
 services:
   # Keycloak Postgres
   keycloak_postgres:
-    image: postgres:16.3
+    image: docker.io/postgres:16.3
     hostname: keycloak_postgres
     container_name: keycloak_postgres
     restart: always

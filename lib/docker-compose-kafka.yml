@@ -1,5 +1,5 @@
 services:
-
+  # Kafka Server
   kafka-1: &kafka
     image: docker.io/apache/kafka:3.8.0
     hostname: kafka-1
@@ -56,7 +56,7 @@ services:
       KAFKA_LISTENERS: CONTROLLER://:${KAFKA_CONTROLLER_PORT},PLAINTEXT://:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://:${KAFKA_3_PUBLIC_PORT}
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:${KAFKA_BROKER_PORT},PLAINTEXT_HOST://localhost:${KAFKA_3_PUBLIC_PORT}
       <<: *kafka-env
-
+  # Kafka UI
   kafka-ui:
     image: docker.io/provectuslabs/kafka-ui:v0.7.2
     hostname: kafka-ui

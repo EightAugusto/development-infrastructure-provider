@@ -1,7 +1,7 @@
 services:
   # Ollama Server
   ollama-server:
-    image: registry.hub.docker.com/ollama/ollama:0.5.7
+    image: docker.io/ollama/ollama:0.5.7
     hostname: ollama
     container_name: ollama
     restart: always
@@ -24,13 +24,13 @@ services:
     volumes:
       - webui:/app/backend/data
     ports:
-      - ${OLLAMA_WEBUI_PUBLIC_PORT}:${OLLAMA_WEBUI_PUBLIC_PORT}
+      - ${OLLAMA_WEBUI_PUBLIC_PORT}:${OLLAMA_WEBUI_PORT}
     # https://docs.openwebui.com/getting-started/env-configuration
     environment:
       OLLAMA_BASE_URLS: http://ollama-server:11434
       WEBUI_SECRET_KEY: ${DEFAULT_SECRET}
       WEBUI_AUTH: False
-      PORT: ${OLLAMA_WEBUI_PUBLIC_PORT}
+      PORT: ${OLLAMA_WEBUI_PORT}
     depends_on:
       ollama-server:
         condition: service_healthy

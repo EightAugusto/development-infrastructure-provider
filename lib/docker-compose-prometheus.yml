@@ -1,6 +1,6 @@
 services:
   prometheus:
-    image: prom/prometheus:v2.52.0
+    image: docker.io/prom/prometheus:v2.52.0
     hostname: prometheus
     container_name: prometheus
     restart: always

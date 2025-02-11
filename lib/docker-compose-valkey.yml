@@ -1,14 +1,14 @@
 services:
   # Valkey
   valkey:
-    image: registry.hub.docker.com/valkey/valkey:8.0.2-alpine
+    image: docker.io/valkey/valkey:8.0.2-alpine
     hostname: valkey
     container_name: valkey
     restart: always
     environment:
-      VALKEY_EXTRA_FLAGS: --port ${VALKEY_PUBLIC_PORT} --save 60 1
+      VALKEY_EXTRA_FLAGS: --port ${VALKEY_PORT} --save 60 1
     ports:
-      - ${VALKEY_PUBLIC_PORT}:${VALKEY_PUBLIC_PORT}
+      - ${VALKEY_PUBLIC_PORT}:${VALKEY_PORT}
     volumes:
       - volume:/data
   # Redis Commander
@@ -18,7 +18,7 @@ services:
     container_name: redis-commander
     restart: always
     environment:
-      REDIS_HOSTS: local:valkey:${VALKEY_PUBLIC_PORT}
+      REDIS_HOSTS: local:valkey:${VALKEY_PORT}
       PORT: ${REDIS_COMMANDER_PUBLIC_PORT}
     ports:
       - ${REDIS_COMMANDER_PUBLIC_PORT}:${REDIS_COMMANDER_PUBLIC_PORT}
