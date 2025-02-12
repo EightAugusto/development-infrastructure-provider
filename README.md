@@ -18,7 +18,7 @@ Kafka 3.8.0        | kafka      |
 Keycloak 25.0      | keycloak   |
 Nexus 3.71.0       | nexus      |
 Ollama 0.5.7       | ollama     |
-Prometheus  2.52.0 | prometheus |
+Prometheus  3.1.0  | prometheus |
 Valkey 8.0.2       | valkey     |
 
 ---
