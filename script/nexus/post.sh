@@ -2,7 +2,7 @@
 BASE_PATH="$(cd -- "$(dirname "${0}")" > /dev/null 2>&1; pwd -P)"
 source ${BASE_PATH}/../../.env
 
-until curl -s -f -o /dev/null localhost:${NEXUS_PUBLIC_PORT}
+until curl --silent --fail --output /dev/null localhost:${NEXUS_PUBLIC_PORT}; do
 do
   echo "Waiting healthcheck for 'localhost:${NEXUS_PUBLIC_PORT}'"
   sleep 30

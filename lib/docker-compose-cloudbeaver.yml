@@ -1,0 +1,18 @@
+services:
+  cloudbeaver:
+    image: docker.io/dbeaver/cloudbeaver:24.3.4
+    hostname: cloudbeaver
+    container_name: cloudbeaver
+    restart: always
+    ports:
+      - ${CLOUDBEAVER_PUBLIC_PORT}:8978
+    volumes:
+      - volume:/opt/cloudbeaver/workspace
+
+volumes:
+  volume:
+
+networks:
+  default:
+    external: true
+    name: ${DOCKER_NETWORK}
