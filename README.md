@@ -15,7 +15,7 @@ Application Name   | Application|
 ---                | ---        |
 Jaeger 1.66.0      | jaeger     |
 Kafka 3.9.0        | kafka      |
-Keycloak 25.0      | keycloak   |
+Keycloak 26.1.2    | keycloak   |
 Nexus 3.71.0       | nexus      |
 Ollama 0.5.7       | ollama     |
 Prometheus  3.1.0  | prometheus |

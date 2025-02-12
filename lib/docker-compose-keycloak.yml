@@ -1,19 +1,24 @@
 services:
   # Keycloak Postgres
   keycloak_postgres:
-    image: docker.io/postgres:16.3
+    image: docker.io/postgres:17.2
     hostname: keycloak_postgres
     container_name: keycloak_postgres
     restart: always
     volumes:
       - volume:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: keycloak
+      POSTGRES_DB: ${KEYCLOAK_DB}
       POSTGRES_USER: ${DEFAULT_USER}
       POSTGRES_PASSWORD: ${DEFAULT_PASSWORD}
+    healthcheck:
+      test: /usr/bin/pg_isready --dbname=${KEYCLOAK_DB} --username=${DEFAULT_USER} || exit 1
+      interval: 5s
+      timeout: 15s
+      retries: 3
   # Keycloak
   keycloak:
-    image: quay.io/keycloak/keycloak:25.0
+    image: quay.io/keycloak/keycloak:26.1.2
     hostname: keycloak
     container_name: keycloak
     restart: always
@@ -24,13 +29,14 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${DEFAULT_PASSWORD}
       # Keycloak database configuration
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/${KEYCLOAK_DB}
       KC_DB_USERNAME: ${DEFAULT_USER}
       KC_DB_PASSWORD: ${DEFAULT_PASSWORD}
     ports:
       - ${KEYCLOAK_PUBLIC_PORT}:${KEYCLOAK_PORT}
     depends_on:
-      - keycloak_postgres
+      keycloak_postgres:
+        condition: service_healthy
 
 volumes:
   volume:
