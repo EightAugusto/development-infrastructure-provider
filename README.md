@@ -14,7 +14,7 @@ Centralized repository to provide deployment tools for local Docker development.
 Application Name   | Application|
 ---                | ---        |
 Jaeger 1.66.0      | jaeger     |
-Kafka 3.8.0        | kafka      |
+Kafka 3.9.0        | kafka      |
 Keycloak 25.0      | keycloak   |
 Nexus 3.71.0       | nexus      |
 Ollama 0.5.7       | ollama     |

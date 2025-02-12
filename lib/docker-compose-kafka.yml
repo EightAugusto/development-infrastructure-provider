@@ -1,7 +1,7 @@
 services:
   # Kafka Server
   kafka-1: &kafka
-    image: docker.io/apache/kafka:3.8.0
+    image: docker.io/apache/kafka:3.9.0
     hostname: kafka-1
     container_name: kafka-1
     restart: always
